@@ -1,49 +1,44 @@
-(function () {
-  const BUTTON_SELECTOR = 'button[data-testid="issue-timeline-load-more-load-top"]';
-  const COUNT_SELECTOR = 'span[data-testid="issue-timeline-load-more-count-load-top"]';
-  const CLICK_DELAY_MS = 500;
+(function() {
+  "use strict";
 
-  function clickLoadMoreButton() {
-    const button = document.querySelector(BUTTON_SELECTOR);
-    if (!button) {
-      return false;
-    }
+  const BUTTON_SELECTOR = "button[data-testid=\"issue-timeline-load-more-load-top\"]";
+  const COUNT_SELECTOR = "span[data-testid=\"issue-timeline-load-more-count-load-top\"]";
+  const CHECK_INTERVAL = 500;
 
+  function getLoadMoreButton() {
+    return document.querySelector(BUTTON_SELECTOR);
+  }
+
+  function getCountText() {
     const countSpan = document.querySelector(COUNT_SELECTOR);
-    const remaining = countSpan ? countSpan.textContent.trim() : 'unknown';
-    console.log(`[GitHub Autoload] Loading more items... (${remaining} remaining)`);
-
-    button.click();
-    return true;
+    return countSpan ? countSpan.textContent : null;
   }
 
-  function startObserver() {
-    // Initial check
-    if (clickLoadMoreButton()) {
-      console.log('[GitHub Autoload] Found initial load more button, clicking...');
+  function clickLoadMore() {
+    const button = getLoadMoreButton();
+    if (button) {
+      const count = getCountText();
+      console.log(`[GH Issue Autoload] Loading more comments... (${count || "unknown"} remaining)`);
+      button.click();
+      return true;
     }
-
-    const observer = new MutationObserver(() => {
-      // Debounce to allow DOM to settle
-      setTimeout(() => {
-        if (clickLoadMoreButton()) {
-          // Button was found and clicked, observer continues watching
-        }
-      }, CLICK_DELAY_MS);
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-
-    console.log('[GitHub Autoload] Observer started, watching for load more buttons...');
+    return false;
   }
 
-  // Start when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startObserver);
+  function startAutoLoad() {
+    console.log("[GH Issue Autoload] Extension activated, checking for Load More button...");
+
+    const interval = setInterval(() => {
+      if (!clickLoadMore()) {
+        console.log("[GH Issue Autoload] All comments loaded.");
+        clearInterval(interval);
+      }
+    }, CHECK_INTERVAL);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAutoLoad);
   } else {
-    startObserver();
+    startAutoLoad();
   }
 })();

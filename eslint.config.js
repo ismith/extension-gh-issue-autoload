@@ -1,8 +1,8 @@
-import globals from "globals";
+const globals = require("globals");
 
-export default [
+module.exports = [
   {
-    files: ["**/*.js"],
+    files: ["src/**/*.js"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "script",
