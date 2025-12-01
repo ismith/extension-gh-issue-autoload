@@ -1,0 +1,14 @@
+{
+  "name": "extension-gh-issue-autoload",
+  "version": "1.0.0",
+  "description": "Chrome extension to automatically load all comments on GitHub Issues pages",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0"
+  },
+  "type": "module"
+}
