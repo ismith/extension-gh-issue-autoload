@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Issue Autoload",
+  "description": "Automatically clicks 'Load more' buttons on GitHub issue pages to load all comments",
+  "version": "1.0.0",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*/*/issues/*",
+        "https://*.ghe.com/*/*/issues/*"
+      ],
+      "js": ["src/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
